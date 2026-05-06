@@ -82,7 +82,17 @@ type mijnhostProvider struct {
 }
 
 func (mhp *mijnhostProvider) GetNameservers(domain string) ([]*models.Nameserver, error) {
-	return nil, fmt.Errorf("unimplemented")
+	response, err := mhp.client.GetDomain(domain)
+	if err != nil {
+		return nil, fmt.Errorf("could not get domain information for %s: %w", domain, err)
+	}
+
+	// Sanity checks
+	if response.Domain != domain {
+		return nil, fmt.Errorf("requested domain differs from domain in response: %s != %s", response.Domain, domain)
+	}
+
+	return models.ToNameserversStripTD(response.Nameservers)
 }
 
 func (mhp *mijnhostProvider) GetZoneRecords(dc *models.DomainConfig) (models.Records, error) {

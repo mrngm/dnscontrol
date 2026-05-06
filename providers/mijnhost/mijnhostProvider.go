@@ -92,7 +92,7 @@ func (mhp *mijnhostProvider) GetNameservers(domain string) ([]*models.Nameserver
 		return nil, fmt.Errorf("requested domain differs from domain in response: %s != %s", response.Domain, domain)
 	}
 
-	return models.ToNameserversStripTD(response.Nameservers)
+	return models.ToNameserversStrip(response.Nameservers)
 }
 
 func (mhp *mijnhostProvider) GetZoneRecords(dc *models.DomainConfig) (models.Records, error) {

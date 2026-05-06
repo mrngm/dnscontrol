@@ -44,6 +44,7 @@ import (
 	_ "github.com/DNSControl/dnscontrol/v4/providers/linode"
 	_ "github.com/DNSControl/dnscontrol/v4/providers/loopia"
 	_ "github.com/DNSControl/dnscontrol/v4/providers/luadns"
+	_ "github.com/DNSControl/dnscontrol/v4/providers/mijnhost"
 	_ "github.com/DNSControl/dnscontrol/v4/providers/mikrotik"
 	_ "github.com/DNSControl/dnscontrol/v4/providers/mythicbeasts"
 	_ "github.com/DNSControl/dnscontrol/v4/providers/namecheap"

@@ -38,6 +38,7 @@ providers/joker @atrull
 providers/linode @koesie10
 providers/loopia @systemcrash
 providers/luadns @riku22
+providers/mijnhost @mrngm
 providers/mikrotik @hedger
 providers/mythicbeasts @tomfitzhenry
 providers/namecheap @willpower232

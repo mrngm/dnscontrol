@@ -45,7 +45,7 @@ func (ac *mijnhostAPIClient) GetDomain(domain string) (mijnhostapi.GetDomainResp
 	}
 	defer resp.Body.Close()
 
-	err = ac.convertResponse(resp, apiResponse)
+	err = ac.convertResponse(resp, &apiResponse)
 	if err != nil {
 		return apiResponse.Data, fmt.Errorf("GetDomain converting response body failed: %w", err)
 	}

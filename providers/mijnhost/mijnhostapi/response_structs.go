@@ -5,6 +5,6 @@ type UpdateDNSRecordForDomainResponse struct {
 }
 
 type StatusWithDescription struct {
-	Status               int64  `json:"status"`
-	StatusDescription    string `json:"status_description"`
+	Status            int64  `json:"status"`
+	StatusDescription string `json:"status_description"`
 }

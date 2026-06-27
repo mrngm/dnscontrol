@@ -1,6 +1,7 @@
 package mijnhost
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"

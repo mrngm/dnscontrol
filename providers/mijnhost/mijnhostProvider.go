@@ -168,6 +168,8 @@ func removeDomainNameserversFromDomainRecords(dc *models.DomainConfig) {
 }
 
 func (mhp *mijnhostProvider) constructChangeOperation(dc *models.DomainConfig, change diff2.Change) func() error {
+	var nativeRecord mijnhostapi.Record
+
 	switch change.Type {
 	case diff2.CREATE:
 		if len(change.New) != 1 {
@@ -176,6 +178,7 @@ func (mhp *mijnhostProvider) constructChangeOperation(dc *models.DomainConfig, c
 		if len(change.Old) != 0 {
 			panic("change CREATE did not contain exactly 0 Old records")
 		}
+		nativeRecord = recordConfigToNative(change.New[0])
 	case diff2.CHANGE:
 		if len(change.New) != 1 {
 			panic("change CHANGE did not contain exactly 1 New record")
@@ -183,6 +186,7 @@ func (mhp *mijnhostProvider) constructChangeOperation(dc *models.DomainConfig, c
 		if len(change.Old) != 1 {
 			panic("change CHANGE did not contain exactly 1 Old record")
 		}
+		nativeRecord = recordConfigToNative(change.New[0])
 	case diff2.DELETE:
 		if len(change.New) != 0 {
 			panic("change DELETE did not contain exactly 0 New records")
@@ -190,6 +194,7 @@ func (mhp *mijnhostProvider) constructChangeOperation(dc *models.DomainConfig, c
 		if len(change.Old) != 1 {
 			panic("change DELETE did not contain exactly 1 Old record")
 		}
+		nativeRecord = recordConfigToNative(change.Old[0])
 	case diff2.REPORT:
 		return nil
 	default:
@@ -197,10 +202,8 @@ func (mhp *mijnhostProvider) constructChangeOperation(dc *models.DomainConfig, c
 	}
 
 	return func() error {
-		var nativeRecord mijnhostapi.Record
 		switch change.Type {
 		case diff2.CHANGE:
-			nativeRecord = recordConfigToNative(change.New[0])
 			fallthrough
 		case diff2.CREATE:
 			_, err := mhp.client.UpdateDNSRecordForDomain(dc.Name, nativeRecord)
@@ -208,7 +211,7 @@ func (mhp *mijnhostProvider) constructChangeOperation(dc *models.DomainConfig, c
 				return err
 			}
 		case diff2.DELETE:
-			//nativeRecord = recordConfigToNative(change.Old[0])
+			panic("unsupported change.Type")
 		default:
 			panic("unsupported change.Type")
 		}

@@ -136,6 +136,8 @@ func (ac *mijnhostAPIClient) convertResponse(resp *http.Response, target any) er
 		// OK
 	case *mijnhostapi.GetDNSRecordsForDomainResponse:
 		// OK
+	case *mijnhostapi.UpdateDNSRecordForDomainResponse:
+		// OK
 	default:
 		panic("unsupported API response type")
 	}

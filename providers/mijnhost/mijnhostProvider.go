@@ -211,7 +211,10 @@ func (mhp *mijnhostProvider) constructChangeOperation(dc *models.DomainConfig, c
 				return err
 			}
 		case diff2.DELETE:
-			panic("unsupported change.Type")
+			_, err := mhp.client.DeleteDNSRecordForDomain(dc.Name, nativeRecord)
+			if err != nil {
+				return err
+			}
 		default:
 			panic("unsupported change.Type")
 		}

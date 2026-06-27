@@ -42,6 +42,9 @@ func nativeToRecordConfig(domain string, native mijnhostapi.Record) *models.Reco
 		rc.SetTargetTXT(native.Value)
 	case "MX":
 		rc.SetTargetMXString(native.Value)
+	case "NS", "CNAME":
+		rc.Type = native.Type
+		rc.SetTarget(native.Value)
 	default:
 		panic("not implemented")
 	}
@@ -51,15 +54,17 @@ func nativeToRecordConfig(domain string, native mijnhostapi.Record) *models.Reco
 
 func recordConfigToNative(rc *models.RecordConfig) mijnhostapi.Record {
 	rec := mijnhostapi.Record{
-		Name: rc.GetLabel(), // may be overwritten below
-		TTL:  int64(rc.TTL),
-		Type: rc.Type,
-		// Value is set below
+		Name:  rc.GetLabel(), // may be overwritten below
+		TTL:   int64(rc.TTL),
+		Type:  rc.Type,
+		Value: rc.GetTargetField(), // may be overwritten below
 	}
 
 	switch rc.Type {
 	case "A", "AAAA":
 		rec.Value = rc.GetTargetIP().WithZone("").String()
+	case "CNAME", "NS":
+		// OK
 	case "TXT":
 		rec.Value = rc.GetTargetTXTJoined()
 	case "MX":

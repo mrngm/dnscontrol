@@ -28,3 +28,8 @@ type Record struct {
 type PatchRecord struct {
 	Record Record `json:"record"`
 }
+
+// DeleteRecord deletes one record at a time
+type DeleteRecord struct {
+	Record Record `json:"record"`
+}

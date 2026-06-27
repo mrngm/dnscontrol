@@ -103,6 +103,33 @@ func (ac *mijnhostAPIClient) UpdateDNSRecordForDomain(domain string, rec mijnhos
 	return apiResponse, nil
 }
 
+func (ac *mijnhostAPIClient) DeleteDNSRecordForDomain(domain string, rec mijnhostapi.Record) (mijnhostapi.DeleteDNSRecordForDomainResponse, error) {
+	var apiResponse mijnhostapi.DeleteDNSRecordForDomainResponse
+
+	body, err := json.Marshal(mijnhostapi.DeleteRecord{rec})
+	if err != nil {
+		return apiResponse, fmt.Errorf("DeleteDNSRecordForDomain marshaling request failed: %w", err)
+	}
+
+	req, err := ac.newRequest(http.MethodDelete, "/domains/"+domain+"/dns", bytes.NewBuffer(body))
+	if err != nil {
+		return apiResponse, fmt.Errorf("DeleteDNSRecordForDomain request creation failed: %w", err)
+	}
+
+	resp, err := ac.performRequest(req)
+	if err != nil {
+		return apiResponse, fmt.Errorf("DeleteDNSRecordForDomain performing request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	err = ac.convertResponse(resp, &apiResponse)
+	if err != nil {
+		return apiResponse, fmt.Errorf("DeleteDNSRecordForDomain converting response body failed: %w", err)
+	}
+
+	return apiResponse, nil
+}
+
 func (ac *mijnhostAPIClient) newRequest(method, endpoint string, body io.Reader) (*http.Request, error) {
 	req, err := http.NewRequest(method, BASE_ENDPOINT+"/"+endpoint, body)
 	if err != nil {
@@ -137,6 +164,8 @@ func (ac *mijnhostAPIClient) convertResponse(resp *http.Response, target any) er
 	case *mijnhostapi.GetDNSRecordsForDomainResponse:
 		// OK
 	case *mijnhostapi.UpdateDNSRecordForDomainResponse:
+		// OK
+	case *mijnhostapi.DeleteDNSRecordForDomainResponse:
 		// OK
 	default:
 		panic("unsupported API response type")

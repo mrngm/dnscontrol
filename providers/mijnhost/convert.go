@@ -68,7 +68,7 @@ func recordConfigToNative(rc *models.RecordConfig) mijnhostapi.Record {
 	case "TXT":
 		rec.Value = rc.GetTargetTXTJoined()
 	case "MX":
-		rec.Value = fmt.Sprintf("%d %s", rc.MxPreference, rc.GetTargetCombinedFunc(nil))
+		rec.Value = rc.GetTargetCombinedFunc(nil)
 	default:
 		panic(fmt.Sprintf("recordConfigToNative for type %q not implemented", rc.Type))
 	}

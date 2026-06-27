@@ -151,7 +151,25 @@ func (ac *mijnhostAPIClient) performRequest(req *http.Request) (*http.Response, 
 		return nil, fmt.Errorf("could not perform request: %w", err)
 	}
 
-	// TODO: handle http status codes
+	switch resp.StatusCode {
+	case http.StatusOK: // 200
+		// OK
+
+	case http.StatusNotFound: // 404
+		body, errBody := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		return resp, fmt.Errorf("resource not found, errBody: %v, body: %s", errBody, body)
+
+	case http.StatusInternalServerError: // 500
+		body, errBody := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		return resp, fmt.Errorf("internal server error, errBody: %v, body: %s", errBody, body)
+
+	default:
+		body, errBody := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		return resp, fmt.Errorf("unhandled statuscode %d, errBody: %v, body: %s", resp.StatusCode, errBody, body)
+	}
 
 	return resp, nil
 }

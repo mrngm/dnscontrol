@@ -75,6 +75,33 @@ func (ac *mijnhostAPIClient) GetDNSRecordsForDomain(domain string) (mijnhostapi.
 	return apiResponse.Data, nil
 }
 
+func (ac *mijnhostAPIClient) UpdateDNSRecordForDomain(domain string, rec mijnhostapi.Record) (mijnhostapi.UpdateDNSRecordForDomainResponse, error) {
+	var apiResponse mijnhostapi.UpdateDNSRecordForDomainResponse
+
+	body, err := json.Marshal(mijnhostapi.PatchRecord{rec})
+	if err != nil {
+		return apiResponse, fmt.Errorf("UpdateDNSRecordForDomain marshaling request failed: %w", err)
+	}
+
+	req, err := ac.newRequest(http.MethodPatch, "/domains/"+domain+"/dns", bytes.NewBuffer(body))
+	if err != nil {
+		return apiResponse, fmt.Errorf("UpdateDNSRecordForDomain request creation failed: %w", err)
+	}
+
+	resp, err := ac.performRequest(req)
+	if err != nil {
+		return apiResponse, fmt.Errorf("UpdateDNSRecordForDomain performing request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	err = ac.convertResponse(resp, &apiResponse)
+	if err != nil {
+		return apiResponse, fmt.Errorf("UpdateDNSRecordForDomain converting response body failed: %w", err)
+	}
+
+	return apiResponse, nil
+}
+
 func (ac *mijnhostAPIClient) newRequest(method, endpoint string, body io.Reader) (*http.Request, error) {
 	req, err := http.NewRequest(method, BASE_ENDPOINT+"/"+endpoint, body)
 	if err != nil {

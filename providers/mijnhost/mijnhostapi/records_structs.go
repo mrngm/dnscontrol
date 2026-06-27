@@ -23,3 +23,8 @@ type Record struct {
 	Type  string `json:"type"`
 	Value string `json:"value"`
 }
+
+// PatchRecord updates one record at a time
+type PatchRecord struct {
+	Record        Record `json:"record"`
+}

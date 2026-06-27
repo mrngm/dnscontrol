@@ -48,8 +48,8 @@ type GetDomainResponseData struct {
 }
 
 type DnssecKey struct {
-	Alg    *string `json:"alg,omitempty"`
-	Flags  *string `json:"flags,omitempty"`
+	Alg    int     `json:"alg,omitempty"`   // contrary to generated API spec: *string
+	Flags  int     `json:"flags,omitempty"` // contrary to generated API spec: *string
 	PubKey *string `json:"pubKey,omitempty"`
 }
 
